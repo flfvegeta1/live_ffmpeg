@@ -242,9 +242,9 @@ static void put_avc_eos_tag(AVIOContext *pb, unsigned ts)
 {
     avio_w8(pb, FLV_TAG_TYPE_VIDEO);
     avio_wb24(pb, 5);               /* Tag Data Size */
-    avio_wb24(pb, ts);
-    avio_w8(pb, (ts >> 24) & 0x7F);
-    //put_timestamp(pb, ts);
+    //avio_wb24(pb, ts);
+    //avio_w8(pb, (ts >> 24) & 0x7F);
+    put_timestamp(pb, ts);
     avio_wb24(pb, 0);               /* StreamId = 0 */
     avio_w8(pb, 23);                /* ub[4] FrameType = 1, ub[4] CodecId = 7 */
     avio_w8(pb, 2);                 /* AVC end of sequence */
@@ -501,9 +501,9 @@ static void flv_write_codec_header(AVFormatContext* s, AVCodecParameters* par, i
                 par->codec_type == AVMEDIA_TYPE_VIDEO ?
                         FLV_TAG_TYPE_VIDEO : FLV_TAG_TYPE_AUDIO);
         avio_wb24(pb, 0); // size patched later
-        avio_wb24(pb, 0);
-        avio_w8(pb, 0);
-        //put_timestamp(pb, ts);
+        //avio_wb24(pb, 0);
+        //avio_w8(pb, 0);
+        put_timestamp(pb, ts);
         avio_wb24(pb, 0); // streamid
         pos = avio_tell(pb);
         if (par->codec_id == AV_CODEC_ID_AAC) {
@@ -1009,9 +1009,9 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     avio_wb24(pb, size + flags_size);
-    avio_wb24(pb, ts & 0xFFFFFF);
-    avio_w8(pb, (ts >> 24) & 0x7F);
-    //put_timestamp(pb, ts);
+    //avio_wb24(pb, ts & 0xFFFFFF);
+    //avio_w8(pb, (ts >> 24) & 0x7F);
+    put_timestamp(pb, ts);
     avio_wb24(pb, flv->reserved);
 
     if (par->codec_type == AVMEDIA_TYPE_DATA ||
